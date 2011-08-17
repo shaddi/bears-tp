@@ -1,0 +1,35 @@
+EE 122 Fall 2011
+Project 1
+
+In this folder you'll find the sample receiver, code for computing and
+validating checksums, as well as a simple interactive sender. 
+
+Receiver.py is the sample receiver. What you've received is largely identical
+to what we will use for grading your projects (what we actually use may include
+additional instrumentation to assist in grading, but should not vary
+significantly in functionality). Feel free to modify it, but keep in mind that
+we will be testing against our own version of the sender, not yours (except, of
+course, if you're implementing an extra credit option that requires extending
+the receiver we provided). If bugs are found or changes made to the sample
+receiver, we'll notify you and post an update copy. Additionally, the latest
+version of the sample receiver will usually be running on FOO.cs.berkeley.edu,
+port 33122, and you are welcome to test your senders against that receiver.
+
+Checksum.py includes two functions for validating and generating checksums for
+your packets:
+
+    validate_checksum(message): Returns true if the message's checksum matches
+        the message, and false otherwise. This function assumes the last field
+        of the message the checksum.
+
+    generate_checksum(message): Returns the checksum string for a message. This
+        function assumes the message includes the trailing delimiter. The
+        checksum is ONLY valid if you simply append this function's result to
+        the message you pass in.
+
+Sender.py is the simple interactive sender. It will send any message you type
+in to the sender hard-coded into the program over a UDP packet. It then waits
+for a response before prompting you for a new message. Feel free to build upon
+this simple sender for your own sender.
+
+
