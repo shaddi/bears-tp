@@ -58,8 +58,9 @@ class Server():
                     self.MESSAGE_HANDLER.get(msg_type,self._handle_other)(seqno, data, address)
             except (KeyboardInterrupt, SystemExit):
                 raise
-            #except (ValueError):
-            #    pass # ignore
+            except ValueError, e:
+                print e
+                pass # ignore
 
     # this sends an ack message to address with specified seqno
     def _send_ack(self, seqno, address):
