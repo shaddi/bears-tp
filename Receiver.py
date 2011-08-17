@@ -7,6 +7,7 @@ class Connection():
         self.current_seqno = start_seq
         self.host = host
         self.port = port
+        self.outfile = open("%s.%d" % (host,port),"w")
         self.seqnums = {} # enforce single instance of each seqno
 
     def ack(self,seqno, data):
@@ -21,6 +22,12 @@ class Connection():
                 else:
                     break # when we find out of order seqno, quit and move on
         return self.current_seqno, res_data
+
+    def record(self,data):
+        self.outfile.write(data)
+
+    def end(self):
+        self.outfile.close()
 
 class Server():
     def __init__(self,listenport=33122):
@@ -65,24 +72,30 @@ class Server():
         conn = Connection(address[0],address[1],seqno)
         self.connections[address] = conn
         print data
+        conn.record(data)
         self._send_ack(seqno, address)
 
     # ignore packets from uninitiated connections
     def _handle_data(self, seqno, data, address): 
         if address in self.connections:
-            ackno,res_data = self.connections[address].ack(seqno,data)
+            conn = self.connections[address]
+            ackno,res_data = conn.ack(seqno,data)
             for l in res_data:
                 print l
+                conn.record(l)
             self._send_ack(ackno, address)
 
     # if we're not missing packets, end the connection. Otherwise keep it
     # alive.
     def _handle_end(self, seqno, data, address):
         if address in self.connections:
-            ackno, res_data = self.connections[address].ack(seqno,data)
+            conn = self.connections[address]
+            ackno, res_data = conn.ack(seqno,data)
             for l in res_data:
                 print l
+                conn.record(l)
             if ackno == seqno: # we're done, kill this connection
+                conn.end()
                 del self.connections[address]
             self._send_ack(ackno, address)
 
