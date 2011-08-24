@@ -29,16 +29,17 @@ class Connection():
     def end(self):
         self.outfile.close()
 
-class Server():
-    def __init__(self,listenport=33122):
+class Receiver():
+    def __init__(self,listenport=33122,debug=False):
+        self.debug = debug
         self.port = 33122
         self.host = ''
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind((self.host,self.port))
-        self.connections = {} # {(address, port) : Connection}
+        self.connections = {} # schema is {(address, port) : Connection}
         self.MESSAGE_HANDLER = {
-            'syn' : self._handle_syn,
+            'start' : self._handle_start,
             'data' : self._handle_data,
             'end' : self._handle_end,
             'ack' : self._handle_ack
@@ -47,7 +48,7 @@ class Server():
     def start(self):
         while True:
             try:
-                message, address = self.s.recvfrom(8192)
+                message, address = self.receive()
                 msg_type, seqno, data, checksum = self._split_message(message)
                 try:
                     seqno = int(seqno)
@@ -62,17 +63,27 @@ class Server():
                 print e
                 pass # ignore
 
+    # waits until packet is received to return
+    def receive(self):
+        return self.s.recvfrom(4096)
+
+    # sends a message to the specified address. Addresses are in the format:
+    #   (IP address, port number)
+    def send(self, message, address):
+        self.s.sendto(message, address)
+
     # this sends an ack message to address with specified seqno
     def _send_ack(self, seqno, address):
         m = "ack|%d|" % seqno
         checksum = Checksum.generate_checksum(m)
         message = "%s%s" % (m, checksum)
-        self.s.sendto(message, address)
+        self.send(message, address)
 
-    def _handle_syn(self, seqno, data, address):
+    def _handle_start(self, seqno, data, address):
         conn = Connection(address[0],address[1],seqno)
         self.connections[address] = conn
-        print data
+        if self.debug:
+            print data
         conn.record(data)
         self._send_ack(seqno, address)
 
@@ -82,7 +93,8 @@ class Server():
             conn = self.connections[address]
             ackno,res_data = conn.ack(seqno,data)
             for l in res_data:
-                print l
+                if self.debug:
+                    print l
                 conn.record(l)
             self._send_ack(ackno, address)
 
@@ -93,7 +105,8 @@ class Server():
             conn = self.connections[address]
             ackno, res_data = conn.ack(seqno,data)
             for l in res_data:
-                print l
+                if self.debug:
+                    print l
                 conn.record(l)
             if ackno == seqno: # we're done, kill this connection
                 conn.end()
@@ -117,5 +130,5 @@ class Server():
         return msg_type, seqno, data, checksum
 
 if __name__ == "__main__":
-    s = Server()
-    s.start()
+    r = Receiver()
+    r.start()

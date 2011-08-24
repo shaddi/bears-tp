@@ -11,7 +11,7 @@ significantly in functionality). Feel free to modify it, but keep in mind that
 we will be testing against our own version of the sender, not yours (except, of
 course, if you're implementing an extra credit option that requires extending
 the receiver we provided). If bugs are found or changes made to the sample
-receiver, we'll notify you and post an update copy. Additionally, the latest
+receiver, we'll notify you and post an updated copy. Additionally, the latest
 version of the sample receiver will usually be running on FOO.cs.berkeley.edu,
 port 33122, and you are welcome to test your senders against that receiver.
 
@@ -27,12 +27,15 @@ your packets:
         checksum is ONLY valid if you simply append this function's result to
         the message you pass in.
 
-Sender.py is the simple interactive sender. It will send any message you type
-in to the sender hard-coded into the program over a UDP packet. It then waits
-for a response before prompting you for a new message. Feel free to build upon
-this simple sender for your own sender, but keep in mind that we make no
-guarantees that the current implementation is bug free. 
+Sender.py is a skeleton sender. While it provides no reliability, it does
+provide all the scaffolding you need to accept the proper command line
+parameters we will use for grading, as well as to read a file's contents into
+our protocol. You will modify this file to implement BEARS-TP.
 
-WackySender.py is almost identical to Sender.py, but sometimes it loses track
-of sequence numbers. You can use this to see how the receiver behaves when loss
-occurs.
+InteractiveSender.py is the simple interactive sender. It will send any message
+you type to the specified receiver. It then waits for a response before
+prompting you for a new message. 
+
+StanfurdSender.py is almost identical to InteractiveSender.py, but it's not
+very good at counting and sometimes loses track of sequence numbers.  You can
+use this to see how the receiver behaves when loss occurs.

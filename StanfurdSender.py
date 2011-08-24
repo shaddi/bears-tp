@@ -4,23 +4,17 @@ import random
 import getopt
 
 import Checksum
+import Sender
 
 '''
-This is a skeleton sender class. Replace as necessary to create a fantastic
-transport protocol. The provided implementation does not provide any
-reliability; it's just an example of how to read from a file and send a packet
-in our format.
+This StanfurdSender sometimes loses count of sequence numbers.
 '''
-class Sender():
+class StanfurdSender():
     def __init__(self,dest,port,filename):
         self.dest = dest
         self.dport = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(('',random.randint(10000,40000)))
-        if filename == None:
-            self.infile = sys.stdin
-        else:
-            self.infile = open(filename,"r")
         
     # Waits until packet is received to return.
     def receive(self):
@@ -47,58 +41,58 @@ class Sender():
     # Main sending loop. 
     def start(self):
         seqno = 0
-        msg = self.infile.read(500)
         msg_type = None
         while not msg_type == 'end':
-            next_msg = self.infile.read(500)
+            msg = raw_input("Message:")
+            rand_added = 0
 
             msg_type = 'data'
             if seqno == 0:
                 msg_type = 'start'
-            elif next_msg == "":
+            elif msg == "done":
                 msg_type = 'end'
+            else:
+                rand_added = random.randint(0,1)
 
-            packet = self.make_packet(msg_type,seqno,msg)
+            packet = self.make_packet(msg_type, seqno+rand_added, msg)
             self.send(packet)
             print "sent: %s" % packet
 
             response = self.receive()
             self.handle_response(response)
-           
-            msg = next_msg
-            seqno += 1
 
-        self.infile.close()
+            if rand_added == 0:
+                seqno += 1
 
 '''
 This will be run if you run this script from the command line. You should not
 need to change any of this.
 '''
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], 
-                               "f:p:d:", ["file=", "port=", "dest="])
-
     def usage():
-        print "BEARS-TP Sender"
-        print "-f FILE | --file=FILE The file to transfer; if empty reads from STDIN"
+        print "BEARS-TP Stanfurd Interactive Sender"
+        print "This sender example is bad at counting sequence numbers."
+        print "Type 'done' to end the session."
         print "-p PORT | --port=PORT The destination port, defaults to 33122"
         print "-d ADDRESS | --dest=ADDRESS The receiver address or hostname, defaults to localhost"
-        print "-h | --help Print this usage message"
+        print "-h | --help Print this help message"
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 
+                               "p:d:", ["port=", "dest="])
+    except:
+        usage()
+        exit()
 
     port = 33122
     dest = "localhost"
     filename = None
 
     for o,a in opts:
-        if o in ("-f", "--file="):
-            filename = a
-        elif o in ("-p", "--port="):
+        if o in ("-p", "--port="):
             port = int(a)
         elif o in ("-d", "--dest="):
             dest = a
-        else:
-            print usage()
-            exit()
 
-    s = Sender(dest,port,filename)
+    s = StanfurdSender(dest,port,filename)
     s.start()
