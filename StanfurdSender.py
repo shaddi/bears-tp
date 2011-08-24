@@ -4,33 +4,18 @@ import random
 import getopt
 
 import Checksum
-import Sender
+import BasicSender
 
 '''
 This StanfurdSender sometimes loses count of sequence numbers.
 '''
-class StanfurdSender():
+class StanfurdSender(BasicSender.BasicSender):
     def __init__(self,dest,port,filename):
         self.dest = dest
         self.dport = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(('',random.randint(10000,40000)))
         
-    # Waits until packet is received to return.
-    def receive(self):
-        return self.sock.recv(4096)
-
-    # Sends a packet to the destination address.
-    def send(self, message):
-        self.sock.sendto(message, (self.dest,self.dport))
-
-    # Prepares a packet
-    def make_packet(self,msg_type,seqno,msg):
-        body = "%s|%d|%s|" % (msg_type,seqno,msg)
-        checksum = Checksum.generate_checksum(body)
-        packet = "%s%s" % (body,checksum)
-        return packet
-
     # Handles a response from the receiver. 
     def handle_response(self,response_packet):
         if Checksum.validate_checksum(response_packet):

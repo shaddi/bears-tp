@@ -2,8 +2,18 @@ EE 122 Fall 2011
 Project 1
 
 In this folder you'll find the sample receiver, code for computing and
-validating checksums, as well as a simple interactive sender. 
+validating checksums, as well as example sender code. 
 
+Quick! What do I have to write?
+===============================
+Sender.py is the file in which you will implement your reliable sender. You do
+not need to modify any other included files to complete this project, unless of
+course you are implementing one of the bells and whistles that requires you to
+do so. It provides all the scaffolding you need to handle the command line
+arguments we will use in the grading of your project.
+
+The Receiver
+============
 Receiver.py is the sample receiver. What you've received is largely identical
 to what we will use for grading your projects (what we actually use may include
 additional instrumentation to assist in grading, but should not vary
@@ -27,15 +37,49 @@ your packets:
         checksum is ONLY valid if you simply append this function's result to
         the message you pass in.
 
-Sender.py is a skeleton sender. While it provides no reliability, it does
-provide all the scaffolding you need to accept the proper command line
-parameters we will use for grading, as well as to read a file's contents into
-our protocol. You will modify this file to implement BEARS-TP.
+BasicSender and Friends
+=======================
+The BasicSender class in BasicSender.py provides a skeleton upon which to build
+your reliable sender. It provides the following methods:
 
-InteractiveSender.py is the simple interactive sender. It will send any message
-you type to the specified receiver. It then waits for a response before
-prompting you for a new message. 
+    __init__(self,dest,port,filename): Creates a BasicSender. Specify the
+        destination's hostname, the port at which the receiver is listening,
+        and a filename to transmit. If no filename is provided, it will read
+        from STDIN.
+    
+    receive(self): Receive a packet. Waits for a packet before returning.
+        Returns the received packet as a string.
 
-StanfurdSender.py is almost identical to InteractiveSender.py, but it's not
-very good at counting and sometimes loses track of sequence numbers.  You can
-use this to see how the receiver behaves when loss occurs.
+    send(self,message): Sends message to the receiver specified when you
+        created the sender.
+
+    make_packet(self,msg_type,seqno,message): Creates a BEARS-TP packet from
+        the specified message type, sequence number, and message. Generates the
+        appropriate checksum, and returns the full BEARS-TP packet with
+        checksum appended.
+
+In addition, it defines one method which you must implement:
+
+    start(self): Starts the Sender.
+
+We provide three example senders that build upon the BasicSender; you are
+welcome to base your design upon these:
+
+UnreliableSender.py: While it provides no reliability, it will read from a file
+or STDIN and send to a receiver using our protocol.
+
+InteractiveSender.py: A simple interactive sender. It will send any message you
+type to the specified receiver. It then waits for a response before prompting
+you for a new message. 
+
+StanfurdSender.py: Almost identical to InteractiveSender.py, it's not very good
+at counting and sometimes loses track of sequence numbers. You can use this to
+see how the receiver behaves when loss occurs.
+
+Problems and Questions
+======================
+Direct any problems or questions you have to your recitation section GSI. If
+you find problems or bugs in the provided code, you may also file an issue
+ticket on this project's Github page:
+
+    https://github.com/shaddi/bears-tp
