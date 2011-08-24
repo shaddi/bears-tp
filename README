@@ -25,18 +25,6 @@ receiver, we'll notify you and post an updated copy. Additionally, the latest
 version of the sample receiver will usually be running on FOO.cs.berkeley.edu,
 port 33122, and you are welcome to test your senders against that receiver.
 
-Checksum.py includes two functions for validating and generating checksums for
-your packets:
-
-    validate_checksum(message): Returns true if the message's checksum matches
-        the message, and false otherwise. This function assumes the last field
-        of the message the checksum.
-
-    generate_checksum(message): Returns the checksum string for a message. This
-        function assumes the message includes the trailing delimiter. The
-        checksum is ONLY valid if you simply append this function's result to
-        the message you pass in.
-
 BasicSender and Friends
 =======================
 The BasicSender class in BasicSender.py provides a skeleton upon which to build
@@ -75,6 +63,20 @@ you for a new message.
 StanfurdSender.py: Almost identical to InteractiveSender.py, it's not very good
 at counting and sometimes loses track of sequence numbers. You can use this to
 see how the receiver behaves when loss occurs.
+
+Checksums
+=========
+Checksum.py includes two functions for validating and generating checksums for
+your packets:
+
+    validate_checksum(message): Returns true if the message's checksum matches
+        the message, and false otherwise. This function assumes the last field
+        of the message the checksum.
+
+    generate_checksum(message): Returns the checksum string for a message. This
+        function assumes the message includes the trailing delimiter. The
+        checksum is ONLY valid if you simply append this function's result to
+        the message you pass in.
 
 Problems and Questions
 ======================
