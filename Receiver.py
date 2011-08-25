@@ -21,7 +21,9 @@ class Connection():
                     del self.seqnums[n]
                 else:
                     break # when we find out of order seqno, quit and move on
-        return self.current_seqno, res_data
+
+        # note: we return the /next/ sequence number we're expecting
+        return self.current_seqno+1, res_data
 
     def record(self,data):
         self.outfile.write(data)
