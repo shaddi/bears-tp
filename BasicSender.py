@@ -13,6 +13,7 @@ class BasicSender():
         self.dest = dest
         self.dport = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(None) # blocking
         self.sock.bind(('',random.randint(10000,40000)))
         if filename == None:
             self.infile = sys.stdin
@@ -20,8 +21,12 @@ class BasicSender():
             self.infile = open(filename,"r")
         
     # Waits until packet is received to return.
-    def receive(self):
-        return self.sock.recv(4096)
+    def receive(self, timeout=None):
+        self.sock.settimeout(timeout)
+        try:
+            return self.sock.recv(4096)
+        except socket.timeout:
+            return None
 
     # Sends a packet to the destination address.
     def send(self, message, address=None):
@@ -35,6 +40,13 @@ class BasicSender():
         checksum = Checksum.generate_checksum(body)
         packet = "%s%s" % (body,checksum)
         return packet
+
+    def split_message(self, message):
+        pieces = message.split('|')
+        msg_type, seqno = pieces[0:2] # first two elements always treated as msg type and seqno
+        checksum = pieces[-1] # last is always treated as checksum
+        data = '|'.join(pieces[2:-1]) # everything in between is considered data
+        return msg_type, seqno, data, checksum
 
     # Main sending loop. 
     def start(self):
