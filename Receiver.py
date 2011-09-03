@@ -7,6 +7,7 @@ class Connection():
         self.current_seqno = start_seq
         self.host = host
         self.port = port
+        self.state = None
         self.outfile = open("%s.%d" % (host,port),"w")
         self.seqnums = {} # enforce single instance of each seqno
 
@@ -44,7 +45,8 @@ class Receiver():
             'start' : self._handle_start,
             'data' : self._handle_data,
             'end' : self._handle_end,
-            'ack' : self._handle_ack
+            'ack' : self._handle_ack,
+            'end-ack' : self._handle_endack
         }
         
     def start(self):
@@ -88,6 +90,7 @@ class Receiver():
             print data
         conn.record(data)
         self._send_ack(seqno, address)
+        conn.state = "start"
 
     # ignore packets from uninitiated connections
     def _handle_data(self, seqno, data, address): 
@@ -99,9 +102,9 @@ class Receiver():
                     print l
                 conn.record(l)
             self._send_ack(ackno, address)
+            conn.state = "data"
 
-    # if we're not missing packets, end the connection. Otherwise keep it
-    # alive.
+    # end packets initiate the terminal three-way handshake. 
     def _handle_end(self, seqno, data, address):
         if address in self.connections:
             conn = self.connections[address]
@@ -110,10 +113,18 @@ class Receiver():
                 if self.debug:
                     print l
                 conn.record(l)
-            if ackno == seqno: # we're done, kill this connection
+            self._send_ack(ackno, address)
+            if ackno == seqno: # we're done
+                conn.state = "end"
+
+    # if we get this, kill the connection. 
+    # must have both correct seqno and must be in the end state; ignore otherwise.
+    def _handle_endack(self, seqno, data, address):
+        if address in self.connections:
+            conn = self.connections[address]
+            if conn.state == "end": # we're done, kill this connection
                 conn.end()
                 del self.connections[address]
-            self._send_ack(ackno, address)
 
     # I'll do the ack-ing here, buddy
     def _handle_ack(self, seqno, data, address):

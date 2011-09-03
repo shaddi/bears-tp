@@ -23,27 +23,38 @@ class InteractiveSender(BasicSender.BasicSender):
         else:
             print "recv: %s <--- CHECKSUM FAILED" % response_packet
 
+    def end_connection
+
     # Main sending loop. 
     def start(self):
         seqno = 0
         msg_type = None
-        while not msg_type == 'end':
-            msg = raw_input("Message:")
+        while not msg_type == 'end-ack':
+            if not msg_type == 'end':
+                msg = raw_input("Message:")
 
-            msg_type = 'data'
-            if seqno == 0:
-                msg_type = 'start'
-            elif msg == "done":
-                msg_type = 'end'
+                msg_type = 'data'
+                if seqno == 0:
+                    msg_type = 'start'
+                elif msg == "done":
+                    msg_type = 'end'
 
-            packet = self.make_packet(msg_type, seqno, msg)
-            self.send(packet)
-            print "sent: %s" % packet
+                packet = self.make_packet(msg_type, seqno, msg)
 
-            response = self.receive()
-            self.handle_response(response)
+                self.send(packet)
+                print "sent: %s" % packet
 
-            seqno += 1
+                response = self.receive()
+                self.handle_response(response)
+
+                seqno += 1
+
+            else:
+                # finish him!
+                msg_type = 'end-ack'
+                packet = self.make_packet(msg_type,seqno)
+                self.send(packet)
+                print "sent: %s" % packet
 
 '''
 This will be run if you run this script from the command line. You should not

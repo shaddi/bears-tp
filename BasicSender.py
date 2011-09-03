@@ -35,8 +35,11 @@ class BasicSender():
         self.sock.sendto(message, address)
 
     # Prepares a packet
-    def make_packet(self,msg_type,seqno,msg):
-        body = "%s|%d|%s|" % (msg_type,seqno,msg)
+    def make_packet(self,msg_type,seqno,msg=None):
+        if msg:
+            body = "%s|%d|%s|" % (msg_type,seqno,msg)
+        else:
+            body = "%s|%d|" % (msg_type,seqno)
         checksum = Checksum.generate_checksum(body)
         packet = "%s%s" % (body,checksum)
         return packet

@@ -21,24 +21,31 @@ class UnreliableSender(BasicSender.BasicSender):
         seqno = 0
         msg = self.infile.read(500)
         msg_type = None
-        while not msg_type == 'end':
-            next_msg = self.infile.read(500)
+        while not msg_type == 'end-ack':
+            if not msg_type == 'end':
+                next_msg = self.infile.read(500)
 
-            msg_type = 'data'
-            if seqno == 0:
-                msg_type = 'start'
-            elif next_msg == "":
-                msg_type = 'end'
+                msg_type = 'data'
+                if seqno == 0:
+                    msg_type = 'start'
+                elif next_msg == "":
+                    msg_type = 'end'
 
-            packet = self.make_packet(msg_type,seqno,msg)
-            self.send(packet)
-            print "sent: %s" % packet
+                packet = self.make_packet(msg_type,seqno,msg)
+                self.send(packet)
+                print "sent: %s" % packet
 
-            response = self.receive()
-            self.handle_response(response)
-           
-            msg = next_msg
-            seqno += 1
+                response = self.receive()
+                self.handle_response(response)
+               
+                msg = next_msg
+                seqno += 1
+            else:
+                # finish him!
+                msg_type = 'end-ack'
+                packet = self.make_packet(msg_type,seqno)
+                self.send(packet)
+                print "sent: %s" % packet
 
         self.infile.close()
 
