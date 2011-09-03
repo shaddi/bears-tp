@@ -42,7 +42,7 @@ class BasicSender():
         packet = "%s%s" % (body,checksum)
         return packet
 
-    def split_message(self, message):
+    def split_packet(self, message):
         pieces = message.split('|')
         msg_type, seqno = pieces[0:2] # first two elements always treated as msg type and seqno
         checksum = pieces[-1] # last is always treated as checksum

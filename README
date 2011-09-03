@@ -35,8 +35,10 @@ your reliable sender. It provides the following methods:
         and a filename to transmit. If no filename is provided, it will read
         from STDIN.
     
-    receive(self): Receive a packet. Waits for a packet before returning.
-        Returns the received packet as a string.
+    receive(self, timeout): Receive a packet. Waits for a packet before
+        returning. Optionally you can specify a maximum timeout to wait for a
+        packet. Returns the received packet as a string, or None if receive
+        times out.
 
     send(self,message): Sends message to the receiver specified when you
         created the sender.
@@ -45,6 +47,10 @@ your reliable sender. It provides the following methods:
         the specified message type, sequence number, and message. Generates the
         appropriate checksum, and returns the full BEARS-TP packet with
         checksum appended.
+
+    split_packet(self,packet): Given a BEARS-TP packet, splits a packet into a
+        tuple of the form (msg_type, seqno, data, checksum). For packets
+        without a data field, the data element will be the empty string.
 
 In addition, it defines one method which you must implement:
 
