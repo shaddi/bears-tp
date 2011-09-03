@@ -27,35 +27,27 @@ class StanfurdSender(BasicSender.BasicSender):
     def start(self):
         seqno = 0
         msg_type = None
-        while not msg_type == 'end-ack':
-            if not msg_type == 'end':
-                msg = raw_input("Message:")
-                rand_added = 0
+        while not msg_type == 'end':
+            msg = raw_input("Message:")
+            rand_added = 0
 
-                msg_type = 'data'
-                if seqno == 0:
-                    msg_type = 'start'
-                elif msg == "done":
-                    msg_type = 'end'
-                else:
-                    rand_added = random.randint(0,1)
-
-                packet = self.make_packet(msg_type, seqno+rand_added, msg)
-                self.send(packet)
-                print "sent: %s" % packet
-
-                response = self.receive()
-                self.handle_response(response)
-
-                if rand_added == 0:
-                    seqno += 1
+            msg_type = 'data'
+            if seqno == 0:
+                msg_type = 'start'
+            elif msg == "done":
+                msg_type = 'end'
             else:
-                # finish him!
-                msg_type = 'end-ack'
-                packet = self.make_packet(msg_type,seqno)
-                self.send(packet)
-                print "sent: %s" % packet
+                rand_added = random.randint(0,1)
 
+            packet = self.make_packet(msg_type, seqno+rand_added, msg)
+            self.send(packet)
+            print "sent: %s" % packet
+
+            response = self.receive()
+            self.handle_response(response)
+
+            if rand_added == 0:
+                seqno += 1
 
 '''
 This will be run if you run this script from the command line. You should not
