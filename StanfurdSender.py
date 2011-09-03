@@ -59,12 +59,12 @@ if __name__ == "__main__":
         print "This sender example is bad at counting sequence numbers."
         print "Type 'done' to end the session."
         print "-p PORT | --port=PORT The destination port, defaults to 33122"
-        print "-d ADDRESS | --dest=ADDRESS The receiver address or hostname, defaults to localhost"
+        print "-a ADDRESS | --address=ADDRESS The receiver address or hostname, defaults to localhost"
         print "-h | --help Print this help message"
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 
-                               "p:d:", ["port=", "dest="])
+                               "p:a:", ["port=", "address="])
     except:
         usage()
         exit()
@@ -76,8 +76,11 @@ if __name__ == "__main__":
     for o,a in opts:
         if o in ("-p", "--port="):
             port = int(a)
-        elif o in ("-d", "--dest="):
+        elif o in ("-a", "--address="):
             dest = a
 
     s = StanfurdSender(dest,port,filename)
-    s.start()
+    try:
+        s.start()
+    except (KeyboardInterrupt, SystemExit):
+        exit()

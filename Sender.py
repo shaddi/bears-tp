@@ -18,29 +18,36 @@ need to change any of this.
 '''
 if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:], 
-                               "f:p:d:", ["file=", "port=", "dest="])
+                               "f:p:a:d", ["file=", "port=", "address=", "debug="])
 
     def usage():
         print "BEARS-TP Sender"
         print "-f FILE | --file=FILE The file to transfer; if empty reads from STDIN"
         print "-p PORT | --port=PORT The destination port, defaults to 33122"
-        print "-d ADDRESS | --dest=ADDRESS The receiver address or hostname, defaults to localhost"
+        print "-a ADDRESS | --address=ADDRESS The receiver address or hostname, defaults to localhost"
+        print "-d | --debug Print debug messages"
         print "-h | --help Print this usage message"
 
     port = 33122
     dest = "localhost"
     filename = None
+    debug = False
 
     for o,a in opts:
         if o in ("-f", "--file="):
             filename = a
         elif o in ("-p", "--port="):
             port = int(a)
-        elif o in ("-d", "--dest="):
+        elif o in ("-a", "--address="):
             dest = a
+        elif o in ("-d", "--debug="):
+            debug = True
         else:
             print usage()
             exit()
 
-    s = Sender(dest,port,filename)
-    s.start()
+    s = Sender(dest,port,filename,debug)
+    try:
+        s.start()
+    except (KeyboardInterrupt, SystemExit):
+        exit()
