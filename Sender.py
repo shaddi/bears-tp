@@ -17,9 +17,6 @@ This will be run if you run this script from the command line. You should not
 need to change any of this.
 '''
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], 
-                               "f:p:a:d", ["file=", "port=", "address=", "debug="])
-
     def usage():
         print "BEARS-TP Sender"
         print "-f FILE | --file=FILE The file to transfer; if empty reads from STDIN"
@@ -27,6 +24,13 @@ if __name__ == "__main__":
         print "-a ADDRESS | --address=ADDRESS The receiver address or hostname, defaults to localhost"
         print "-d | --debug Print debug messages"
         print "-h | --help Print this usage message"
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 
+                               "f:p:a:d", ["file=", "port=", "address=", "debug="])
+    except:
+        usage()
+        exit()
 
     port = 33122
     dest = "localhost"
@@ -42,9 +46,6 @@ if __name__ == "__main__":
             dest = a
         elif o in ("-d", "--debug="):
             debug = True
-        else:
-            print usage()
-            exit()
 
     s = Sender(dest,port,filename,debug)
     try:

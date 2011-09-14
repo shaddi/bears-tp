@@ -47,9 +47,6 @@ This will be run if you run this script from the command line. You should not
 need to change any of this.
 '''
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], 
-                               "f:p:a:", ["file=", "port=", "address="])
-
     def usage():
         print "BEARS-TP Unreliable Sender"
         print "Sends data unreliably from a file or STDIN."
@@ -57,6 +54,13 @@ if __name__ == "__main__":
         print "-p PORT | --port=PORT The destination port, defaults to 33122"
         print "-a ADDRESS | --address=ADDRESS The receiver address or hostname, defaults to localhost"
         print "-h | --help Print this usage message"
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 
+                               "f:p:a:", ["file=", "port=", "address="])
+    except:
+        usage()
+        exit()
 
     port = 33122
     dest = "localhost"
@@ -69,9 +73,6 @@ if __name__ == "__main__":
             port = int(a)
         elif o in ("-a", "--address="):
             dest = a
-        else:
-            print usage()
-            exit()
 
     s = UnreliableSender(dest,port,filename)
     try:
