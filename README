@@ -22,8 +22,9 @@ we will be testing against our own version of the sender, not yours (except, of
 course, if you're implementing an extra credit option that requires extending
 the receiver we provided). If bugs are found or changes made to the sample
 receiver, we'll notify you and post an updated copy. Additionally, the latest
-version of the sample receiver will usually be running on FOO.cs.berkeley.edu,
-port 33122, and you are welcome to test your senders against that receiver.
+version of the sample receiver will usually be running on
+harpua.cs.berkeley.edu, port 33122, and you are welcome to test your senders
+against that receiver.
 
 BasicSender and Friends
 =======================
