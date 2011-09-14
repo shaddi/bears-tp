@@ -12,7 +12,7 @@ class Connection():
         self.current_seqno = start_seq - 1 # expect to ack from the start_seqno
         self.host = host
         self.port = port
-        self.max_buf_size = 50
+        self.max_buf_size = 5
         self.outfile = open("%s.%d" % (host,port),"w")
         self.seqnums = {} # enforce single instance of each seqno
 
