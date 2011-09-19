@@ -46,7 +46,7 @@ class Receiver():
         self.debug = debug
         self.timeout = timeout
         self.last_cleanup = time.time()
-        self.port = 33122
+        self.port = listenport
         self.host = ''
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -165,15 +165,19 @@ class Receiver():
         self.last_cleanup = now
 
 if __name__ == "__main__":
-    opts, args = getopt.getopt(sys.argv[1:], 
-                               "p:dt:", ["port=", "debug=", "timeout="])
-
     def usage():
         print "BEARS-TP Receiver"
         print "-p PORT | --port=PORT The listen port, defaults to 33122"
         print "-t TIMEOUT | --timeout=TIMEOUT Receiver timeout in seconds"
         print "-d | --debug Print debug messages"
         print "-h | --help Print this usage message"
+    
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 
+                               "p:dt:", ["port=", "debug=", "timeout="])
+    except:
+        usage()
+        exit()
 
     port = 33122
     debug = False
