@@ -122,8 +122,7 @@ class Receiver():
                 conn.record(l)
             self._send_ack(ackno, address)
 
-    # if we're not missing packets, end the connection. Otherwise keep it
-    # alive.
+    # handle end packets
     def _handle_end(self, seqno, data, address):
         if address in self.connections:
             conn = self.connections[address]
@@ -132,8 +131,6 @@ class Receiver():
                 if self.debug:
                     print l
                 conn.record(l)
-            if ackno == seqno: # we're done, kill this connection
-                conn.end()
             self._send_ack(ackno, address)
 
     # I'll do the ack-ing here, buddy
