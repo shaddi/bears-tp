@@ -102,8 +102,9 @@ class Receiver():
         self.send(message, address)
 
     def _handle_start(self, seqno, data, address):
-        conn = Connection(address[0],address[1],seqno,self.debug)
-        self.connections[address] = conn
+        if not address in self.connections:
+            self.connections[address] = Connection(address[0],address[1],seqno,self.debug)
+        conn = self.connections[address]
         ackno, res_data = conn.ack(seqno,data)
         for l in res_data:
             if self.debug:
