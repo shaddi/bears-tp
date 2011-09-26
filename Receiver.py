@@ -19,7 +19,7 @@ class Connection():
     def ack(self,seqno, data):
         res_data = []
         self.updated = time.time()
-        if seqno > self.current_seqno and seqno < self.current_seqno + self.max_buf_size:
+        if seqno > self.current_seqno and seqno <= self.current_seqno + self.max_buf_size:
             self.seqnums[seqno] = data 
             for n in sorted(self.seqnums.keys()):
                 if n == self.current_seqno + 1:
