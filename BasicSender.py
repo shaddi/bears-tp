@@ -20,7 +20,7 @@ class BasicSender():
             self.infile = sys.stdin
         else:
             self.infile = open(filename,"r")
-        
+
     # Waits until packet is received to return.
     def receive(self, timeout=None):
         self.sock.settimeout(timeout)
@@ -49,6 +49,6 @@ class BasicSender():
         data = '|'.join(pieces[2:-1]) # everything in between is considered data
         return msg_type, seqno, data, checksum
 
-    # Main sending loop. 
+    # Main sending loop.
     def start(self):
         raise NotImplementedError

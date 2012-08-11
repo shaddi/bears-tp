@@ -8,7 +8,7 @@ def validate_checksum(message):
         return generate_checksum(msg) == reported_checksum
     except:
         return False
-    
+
 # Assumes message does NOT contain final checksum field. Message MUST end
 # with a trailing '|' character.
 def generate_checksum(message):

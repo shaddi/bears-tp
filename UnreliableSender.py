@@ -9,14 +9,14 @@ import BasicSender
 This is an unreliable sender class that reads from a file or STDIN.
 '''
 class UnreliableSender(BasicSender.BasicSender):
-    # Handles a response from the receiver. 
+    # Handles a response from the receiver.
     def handle_response(self,response_packet):
         if Checksum.validate_checksum(response_packet):
             print "recv: %s" % response_packet
         else:
             print "recv: %s <--- CHECKSUM FAILED" % response_packet
 
-    # Main sending loop. 
+    # Main sending loop.
     def start(self):
         seqno = 0
         msg = self.infile.read(500)
@@ -36,7 +36,7 @@ class UnreliableSender(BasicSender.BasicSender):
 
             response = self.receive()
             self.handle_response(response)
-           
+
             msg = next_msg
             seqno += 1
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
         print "-h | --help Print this usage message"
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 
+        opts, args = getopt.getopt(sys.argv[1:],
                                "f:p:a:", ["file=", "port=", "address="])
     except:
         usage()

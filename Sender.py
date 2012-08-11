@@ -8,7 +8,7 @@ import BasicSender
 This is a skeleton sender class. Create a fantastic transport protocol here.
 '''
 class Sender(BasicSender.BasicSender):
-    # Main sending loop. 
+    # Main sending loop.
     def start(self):
         raise NotImplementedError
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print "-h | --help Print this usage message"
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 
+        opts, args = getopt.getopt(sys.argv[1:],
                                "f:p:a:d", ["file=", "port=", "address=", "debug="])
     except:
         usage()

@@ -20,7 +20,7 @@ class Connection():
         res_data = []
         self.updated = time.time()
         if seqno > self.current_seqno and seqno <= self.current_seqno + self.max_buf_size:
-            self.seqnums[seqno] = data 
+            self.seqnums[seqno] = data
             for n in sorted(self.seqnums.keys()):
                 if n == self.current_seqno + 1:
                     self.current_seqno += 1
@@ -59,7 +59,7 @@ class Receiver():
             'end' : self._handle_end,
             'ack' : self._handle_ack
         }
-        
+
     def start(self):
         while True:
             try:
@@ -76,9 +76,9 @@ class Receiver():
                     print "checksum failed: %s" % message
 
                 if time.time() - self.last_cleanup > self.timeout:
-                    self._cleanup() 
+                    self._cleanup()
             except socket.timeout:
-                self._cleanup() 
+                self._cleanup()
             except (KeyboardInterrupt, SystemExit):
                 exit()
             except ValueError, e:
@@ -113,7 +113,7 @@ class Receiver():
         self._send_ack(ackno, address)
 
     # ignore packets from uninitiated connections
-    def _handle_data(self, seqno, data, address): 
+    def _handle_data(self, seqno, data, address):
         if address in self.connections:
             conn = self.connections[address]
             ackno,res_data = conn.ack(seqno,data)
@@ -169,9 +169,9 @@ if __name__ == "__main__":
         print "-t TIMEOUT | --timeout=TIMEOUT Receiver timeout in seconds"
         print "-d | --debug Print debug messages"
         print "-h | --help Print this usage message"
-    
+
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 
+        opts, args = getopt.getopt(sys.argv[1:],
                                "p:dt:", ["port=", "debug=", "timeout="])
     except:
         usage()

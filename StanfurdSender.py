@@ -15,15 +15,15 @@ class StanfurdSender(BasicSender.BasicSender):
         self.dport = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(('',random.randint(10000,40000)))
-        
-    # Handles a response from the receiver. 
+
+    # Handles a response from the receiver.
     def handle_response(self,response_packet):
         if Checksum.validate_checksum(response_packet):
             print "recv: %s" % response_packet
         else:
             print "recv: %s <--- CHECKSUM FAILED" % response_packet
 
-    # Main sending loop. 
+    # Main sending loop.
     def start(self):
         seqno = 0
         msg_type = None
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print "-h | --help Print this help message"
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 
+        opts, args = getopt.getopt(sys.argv[1:],
                                "p:a:", ["port=", "address="])
     except:
         usage()
