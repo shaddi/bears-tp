@@ -14,7 +14,8 @@ class Sender(BasicSender.BasicSender):
 
 '''
 This will be run if you run this script from the command line. You should not
-need to change any of this.
+change any of this; the grader may rely on the behavior here to test your
+submission.
 '''
 if __name__ == "__main__":
     def usage():
