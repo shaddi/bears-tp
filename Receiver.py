@@ -37,6 +37,7 @@ class Connection():
 
     def record(self,data):
         self.outfile.write(data)
+        self.outfile.flush()
 
     def end(self):
         self.outfile.close()
@@ -69,7 +70,8 @@ class Receiver():
                     seqno = int(seqno)
                 except:
                     raise ValueError
-                print "%s %d %s %s" % (msg_type, seqno, data, checksum)
+                if debug:
+                    print "%s %d %s %s" % (msg_type, seqno, data, checksum)
                 if Checksum.validate_checksum(message):
                     self.MESSAGE_HANDLER.get(msg_type,self._handle_other)(seqno, data, address)
                 elif self.debug:
