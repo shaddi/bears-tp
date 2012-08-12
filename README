@@ -2,7 +2,7 @@ EE 122 Fall 2011
 Project 1
 
 In this folder you'll find the sample receiver, code for computing and
-validating checksums, as well as example sender code. 
+validating checksums, as well as example sender code.
 
 Quick! What do I have to write?
 ===============================
@@ -21,10 +21,7 @@ significantly in functionality). Feel free to modify it, but keep in mind that
 we will be testing against our own version of the sender, not yours (except, of
 course, if you're implementing an extra credit option that requires extending
 the receiver we provided). If bugs are found or changes made to the sample
-receiver, we'll notify you and post an updated copy. Additionally, the latest
-version of the sample receiver will usually be running on
-harpua.cs.berkeley.edu, port 33122, and you are welcome to test your senders
-against that receiver.
+receiver, we'll notify you and post an updated copy.
 
 BasicSender and Friends
 =======================
@@ -35,7 +32,7 @@ your reliable sender. It provides the following methods:
         destination's hostname, the port at which the receiver is listening,
         and a filename to transmit. If no filename is provided, it will read
         from STDIN.
-    
+
     receive(self, timeout): Receive a packet. Waits for a packet before
         returning. Optionally you can specify a maximum timeout to wait for a
         packet. Returns the received packet as a string, or None if receive
@@ -65,7 +62,7 @@ or STDIN and send to a receiver using our protocol.
 
 InteractiveSender.py: A simple interactive sender. It will send any message you
 type to the specified receiver. It then waits for a response before prompting
-you for a new message. 
+you for a new message.
 
 StanfurdSender.py: Almost identical to InteractiveSender.py, it's not very good
 at counting and sometimes loses track of sequence numbers. You can use this to
@@ -84,6 +81,31 @@ your packets:
         function assumes the message includes the trailing delimiter. The
         checksum is ONLY valid if you simply append this function's result to
         the message you pass in.
+
+Testing
+=======
+You are expected to write test cases for your own code to ensure complaince
+with the project specifications. To assist you, we've given you a simple test
+harness (SimpleForwarder.py). The test harness is designed to intercept all
+packets sent between your sender and the receiver. It can modify the stream of
+packets and check to ensure the stream meets certain conditions. This is very
+similar to the grading script that we will use to evaluate your projects.
+
+We have provided a single test case as an example of how to use the test
+harness. This test case sends this README file using the specified sender
+implementation to the specified receiver implementation, and drops random
+packets between each. It then verifies that the file received by the receiver
+matches the input.
+
+XXX: add a usage example
+
+Passing this basic test case is a necessary but not sufficient condition for
+doing well on this project; there are still many edge cases that it does not
+cover. In addition, there are other correctness conditions beyond simply
+producing an identical copy of the input file (for instance, you should not
+unnecessarily re-transmit date, nor should you re-transmit data that has
+already been acknowledged). You should think about what these edge cases might
+be and write appropriate test cases to cover them.
 
 Problems and Questions
 ======================
