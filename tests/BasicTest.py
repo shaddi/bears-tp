@@ -1,13 +1,12 @@
 import hashlib
 import os
-import random
 
 """
 This file contains test cases for the Forwarder. You can add test cases here,
 and then use them in the forwarder.
 """
 
-class BTPTest(object):
+class BasicTest(object):
     """ A test case should define the following:
         - handle_packet: a method to be called whenever a packet arrives
         - handle_tick: a method to be called at every timestemp
@@ -77,7 +76,7 @@ class BTPTest(object):
         Checks if the contents of two files are the same. Returns True if they
         are, and False otherwise.
         """
-        return BTPTest.md5sum(file1) == BTPTest.md5sum(file2)
+        return BasicTest.md5sum(file1) == BasicTest.md5sum(file2)
 
     @staticmethod
     def md5sum(filename, block_size=2**20):
@@ -93,20 +92,3 @@ class BTPTest(object):
             md5.update(data)
         f.close()
         return md5.digest()
-
-"""
-This tests random packet drops. We randomly decide to drop about half of the
-packets that go through the forwarder in either direction.
-
-Note that to implement this we just needed to override the handle_packet()
-method -- this gives you an example of how to extend the basic test case to
-create your own.
-"""
-class RandomDropTest(BTPTest):
-    def handle_packet(self):
-        for p in self.forwarder.in_queue:
-            if random.choice([True, False]):
-                self.forwarder.out_queue.append(p)
-
-        # empty out the in_queue
-        self.forwarder.in_queue = []

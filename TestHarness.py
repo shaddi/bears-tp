@@ -5,7 +5,6 @@ import subprocess
 import time
 
 import Checksum
-from Tests import BTPTest, RandomDropTest
 
 """
 Testing is divided into two pieces: this forwarder and a set of test cases in
@@ -179,7 +178,12 @@ class Packet():
             int(self.checksum)
             self.bogon = False
         except Exception as e:
-            self.bogon = True # If a packet is invalid, this is set to true. We don't do anything special otherwise, and it's passed along like every other packet. However, since invalid packets may have undefined contents, it's recommended to just pass these along and do no further processing on them.
+            # If a packet is invalid, this is set to true. We don't do anything
+            # special otherwise, and it's passed along like every other packet.
+            # However, since invalid packets may have undefined contents, it's
+            # recommended to just pass these along and do no further processing
+            # on them.
+            self.bogon = True
 
     def update_packet(self, msg_type=None, seqno=None, data=None, full_packet=None, update_checksum=True):
         if not self.bogon:
@@ -216,12 +220,18 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", help="Base port value (default: 33123)", default=33123)
     parser.add_argument("-s", "--sender", help="path to Sender implementation (default: Sender.py)", default="Sender.py")
     parser.add_argument("-r", "--receiver", help="path to Receiver implementation (default: Receiver.py)", default="Receiver.py")
+    parser.add_argument("-t", "--test", help="TODO: IMPLEMENT THIS. Name of test case to run (default: BasicTest)", default="BasicTest")
     args = parser.parse_args()
     f = Forwarder(args.sender, args.receiver, args.port)
 
+    # TODO: Right now, we have to instantiate these here. The behavior should
+    # be to specify a set of test names on the command line and to go run
+    # those.
+
     # Add tests here.
-    BTPTest(f, "README")
-    RandomDropTest(f, "README")
+    from tests import BasicTest, RandomDropTest
+    BasicTest.BasicTest(f, "README")
+    RandomDropTest.RandomDropTest(f, "README")
 
     # Don't modify anything below this line!
     f.execute_tests()
