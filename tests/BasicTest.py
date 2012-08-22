@@ -2,8 +2,10 @@ import hashlib
 import os
 
 """
-This file contains test cases for the Forwarder. You can add test cases here,
-and then use them in the forwarder.
+This file contains a basic test case that just passes packets through the
+forwarder. Custom test cases should extend this class, and you should only need
+to implement a new handle_packet(), handle_tick(), and/or result() method as
+needed.
 """
 
 class BasicTest(object):

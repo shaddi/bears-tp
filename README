@@ -1,4 +1,4 @@
-EE 122 Fall 2011
+EE 122 Fall 2012
 Project 1
 
 In this folder you'll find the sample receiver, code for computing and
@@ -86,24 +86,31 @@ Testing
 =======
 You are expected to write test cases for your own code to ensure complaince
 with the project specifications. To assist you, we've given you a simple test
-harness (SimpleForwarder.py). The test harness is designed to intercept all
+harness (TestHarness.py). The test harness is designed to intercept all
 packets sent between your sender and the receiver. It can modify the stream of
 packets and check to ensure the stream meets certain conditions. This is very
 similar to the grading script that we will use to evaluate your projects.
 
-We have provided a single test case as an example of how to use the test
-harness. This test case sends this README file using the specified sender
-implementation to the specified receiver implementation, and drops random
-packets between each. It then verifies that the file received by the receiver
-matches the input.
+We have provided two test cases as examples of how to use the test harness.
+These test cases send this README file using the specified sender
+implementation to the specified receiver implementation, and either passes all
+packets through unmodified or drops random packets between each. They both then
+verifies that the file received by the receiver matches the input.
 
-XXX: add a usage example
+To run a test using this test harness, do the following:
 
-Passing this basic test case is a necessary but not sufficient condition for
-doing well on this project; there are still many edge cases that it does not
-cover. In addition, there are other correctness conditions beyond simply
-producing an identical copy of the input file (for instance, you should not
-unnecessarily re-transmit date, nor should you re-transmit data that has
+    python TestHarness.py -s YourSender.py -r Receiver.py
+
+where "YourSender.py" is the path to your sender implementation, "Receiver.py"
+is the path to the receiver implementation. Inside TestHarness.py, you need to
+modify the function "tests_to_run" at the top of the script to include any test
+cases you add.
+
+Passing the basic test cases we provide is a necessary but not sufficient
+condition for doing well on this project; there are still many edge cases that
+they do not cover. In addition, there are other correctness conditions beyond
+simply producing an identical copy of the input file (for instance, you should
+not unnecessarily re-transmit date, nor should you re-transmit data that has
 already been acknowledged). You should think about what these edge cases might
 be and write appropriate test cases to cover them.
 

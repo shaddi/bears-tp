@@ -7,8 +7,20 @@ import time
 import Checksum
 
 """
+Add the tests you want to run here. Don't modify anything outside this function!
+
+You'll need to import the tests here and then create an instance of each one
+you want to run. The tests automatically register themselves with the
+forwarder, so they will magically be run.
+"""
+def tests_to_run(forwarder):
+    from tests import BasicTest, RandomDropTest
+    BasicTest.BasicTest(forwarder, "README")
+    RandomDropTest.RandomDropTest(forwarder, "README")
+
+"""
 Testing is divided into two pieces: this forwarder and a set of test cases in
-Test.py.
+the tests directory.
 
 This forwarder literally forwards packets between a sender and a receiver. The
 forwarder accepts two files -- a sender and a receiver implementation and a
@@ -40,9 +52,6 @@ the test case passed.
 
 TODO: Add a timeout for tests (to cope with senders that never exit).
 """
-
-
-
 class Forwarder(object):
     """
     The packet forwarder for testing
@@ -215,23 +224,14 @@ class Packet():
         return "%s|%s|...|%s" % (self.msg_type, self.seqno, self.checksum)
 
 if __name__ == "__main__":
+    # Don't modify anything below this line!
     import argparse
     parser = argparse.ArgumentParser(description="Forwarder/Testharness for BEARS-TP")
     parser.add_argument("-p", "--port", help="Base port value (default: 33123)", default=33123)
     parser.add_argument("-s", "--sender", help="path to Sender implementation (default: Sender.py)", default="Sender.py")
     parser.add_argument("-r", "--receiver", help="path to Receiver implementation (default: Receiver.py)", default="Receiver.py")
-    parser.add_argument("-t", "--test", help="TODO: IMPLEMENT THIS. Name of test case to run (default: BasicTest)", default="BasicTest")
     args = parser.parse_args()
+
     f = Forwarder(args.sender, args.receiver, args.port)
-
-    # TODO: Right now, we have to instantiate these here. The behavior should
-    # be to specify a set of test names on the command line and to go run
-    # those.
-
-    # Add tests here.
-    from tests import BasicTest, RandomDropTest
-    BasicTest.BasicTest(f, "README")
-    RandomDropTest.RandomDropTest(f, "README")
-
-    # Don't modify anything below this line!
+    tests_to_run(f)
     f.execute_tests()
