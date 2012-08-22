@@ -50,8 +50,6 @@ method and then sends over the wire any packets in the out_queue.
 Once the sender has terminated, we kill the receiver and call the test case's
 result() method, which should do something sensible to determine whether or not
 the test case passed.
-
-TODO: Add a timeout for tests (to cope with senders that never exit).
 """
 class Forwarder(object):
     """
@@ -74,6 +72,7 @@ class Forwarder(object):
         self.test_state = "INIT"
         self.tick_interval = 0.001 # 1ms
         self.last_tick = time.time()
+        self.timeout = 600. # seconds
 
         # network stuff
         self.port = port
@@ -151,6 +150,7 @@ class Forwarder(object):
                                    "-f", self.tests[self.current_test],
                                    "-p", str(self.port)])
         try:
+            start_time = time.time()
             while sender.poll() is None:
                 try:
                     message, address = self.sock.recvfrom(4096)
@@ -160,6 +160,8 @@ class Forwarder(object):
                 if time.time() - self.last_tick > self.tick_interval:
                     self.last_tick = time.time()
                     self._tick()
+                if time.time() - start_time > self.timeout:
+                    raise Exception("Test timed out!")
             self._tick()
         except (KeyboardInterrupt, SystemExit):
             exit()
