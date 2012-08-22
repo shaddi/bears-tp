@@ -84,18 +84,19 @@ your packets:
 
 Testing
 =======
-You are expected to write test cases for your own code to ensure complaince
+You are expected to write test cases for your own code to ensure compliance
 with the project specifications. To assist you, we've given you a simple test
-harness (TestHarness.py). The test harness is designed to intercept all
-packets sent between your sender and the receiver. It can modify the stream of
-packets and check to ensure the stream meets certain conditions. This is very
-similar to the grading script that we will use to evaluate your projects.
+harness (TestHarness.py). The test harness is designed to intercept all packets
+sent between your sender and the receiver. It can modify the stream of packets
+and check to ensure the stream meets certain conditions. This is very similar
+to the grading script that we will use to evaluate your projects.
 
-We have provided two test cases as examples of how to use the test harness.
-These test cases send this README file using the specified sender
-implementation to the specified receiver implementation, and either passes all
-packets through unmodified or drops random packets between each. They both then
-verifies that the file received by the receiver matches the input.
+We have provided two test cases (BasicTest and DropRandomPackets) as examples
+of how to use the test harness. These test cases send this README file using
+the specified sender implementation to the specified receiver implementation,
+either passing all packets through the forwarder unmodified or dropping random
+packets. They both then verify that the file received by the receiver matches
+the input.
 
 To run a test using this test harness, do the following:
 
