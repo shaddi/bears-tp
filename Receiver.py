@@ -37,13 +37,6 @@ class Connection():
 
     def record(self,data):
         self.outfile.write(data)
-
-        # XXX This is potentially problematic for testing but should not impact
-        # correctness -- previously, we would only flush on file close, which
-        # only happened when the connection was closed. If the students do not
-        # trigger connection close properly, we'll still see the last received
-        # contents in the output file. It seems like just having a test verify
-        # protocol adherence should catch this.
         self.outfile.flush()
 
     def end(self):
