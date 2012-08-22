@@ -5,6 +5,7 @@ import subprocess
 import time
 
 import Checksum
+from tests import BasicTest
 
 """
 Add the tests you want to run here. Don't modify anything outside this function!
@@ -100,7 +101,7 @@ class Forwarder(object):
         self.sock.sendto(packet.full_packet, packet.address)
 
     def register_test(self, testcase, input_file):
-        # TODO: make sure the thing we're adding is of type test
+        assert isinstance(testcase, BasicTest.BasicTest)
         self.tests[testcase] = input_file
 
     def execute_tests(self):
