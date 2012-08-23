@@ -9,14 +9,14 @@ Quick! What do I have to write?
 Sender.py is the file in which you will implement your reliable sender. You do
 not need to modify any other included files to complete this project, unless of
 course you are implementing one of the bells and whistles that requires you to
-do so. It provides all the scaffolding you need to handle the command line
-arguments we will use in the grading of your project.
+do so. Sender.py provides all the scaffolding you need to handle the
+command line arguments we will use in the grading of your project.
 
 The Receiver
 ============
-Receiver.py is the sample receiver. What you've received is largely identical
-to what we will use for grading your projects (what we actually use may include
-additional instrumentation to assist in grading, but should not vary
+Receiver.py is the sample receiver. The version of Receiver.py here is largely
+identical to what we will use for grading your projects (what we actually use
+may include additional instrumentation to assist in grading, but should not vary
 significantly in functionality). Feel free to modify it, but keep in mind that
 we will be testing against our own version of the sender, not yours (except, of
 course, if you're implementing an extra credit option that requires extending
