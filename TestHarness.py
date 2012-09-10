@@ -146,6 +146,7 @@ class Forwarder(object):
 
         receiver = subprocess.Popen(["python", self.receiver_path,
                                      "-p", str(self.receiver_port)])
+        time.sleep(0.2) # make sure the receiver is started first
         sender = subprocess.Popen(["python", self.sender_path,
                                    "-f", self.tests[self.current_test],
                                    "-p", str(self.port)])
