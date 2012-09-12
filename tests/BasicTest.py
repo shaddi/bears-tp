@@ -65,6 +65,8 @@ class BasicTest(object):
         automate testing (i.e., return "True" for every test that passes,
         "False" for every test that fails).
         """
+        if not os.path.exists(receiver_outfile):
+            raise ValueError("No such file %s" % str(receiver_outfile))
         if self.files_are_the_same(self.input_file, receiver_outfile):
             print "Test passes!"
             return True
@@ -84,6 +86,8 @@ class BasicTest(object):
     def md5sum(filename, block_size=2**20):
         """
         Calculates the md5sum of a file.
+
+        Precondition: file exists
         """
         f = open(filename, "rb")
         md5 = hashlib.md5()
