@@ -229,13 +229,35 @@ class Packet():
 
 if __name__ == "__main__":
     # Don't modify anything below this line!
-    import argparse
-    parser = argparse.ArgumentParser(description="Forwarder/Testharness for BEARS-TP")
-    parser.add_argument("-p", "--port", help="Base port value (default: 33123)", default=33123)
-    parser.add_argument("-s", "--sender", help="path to Sender implementation (default: Sender.py)", default="Sender.py")
-    parser.add_argument("-r", "--receiver", help="path to Receiver implementation (default: Receiver.py)", default="Receiver.py")
-    args = parser.parse_args()
+    import getopt
+    import sys
 
-    f = Forwarder(args.sender, args.receiver, args.port)
+    def usage():
+        print "Forwarder/Test harness for BEARS-TP"
+        print "-p PORT | --port PORT Base port value (default: 33123)"
+        print "-s SENDER | --sender SENDER The path to Sender implementation (default: Sender.py)"
+        print "-r RECEIVER | --receiver RECEIVER The path to the Receiver implementation (default: Receiver.py)"
+        print "-h | --help Print this usage message"
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                "p:s:r", ["port=", "sender=", "receiver="])
+    except:
+        usage()
+        exit()
+
+    port = 33123
+    sender = "Sender.py"
+    receiver = "Receiver.py"
+
+    for o,a in opts:
+        if o in ("-p", "--port"):
+            port = int(a)
+        elif o in ("-s", "--sender"):
+            sender = a
+        elif o in ("-r", "--receiver"):
+            receiver = a
+
+    f = Forwarder(sender, receiver, port)
     tests_to_run(f)
     f.execute_tests()
