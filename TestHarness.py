@@ -171,6 +171,8 @@ class Forwarder(object):
                 sender.kill()
             receiver.kill()
 
+        if not os.path.exists(self.recv_outfile):
+          raise RuntimeError("No data received by receiver!")
         self.current_test.result(self.recv_outfile)
 
 class Packet():
