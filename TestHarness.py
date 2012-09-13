@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                "p:s:r", ["port=", "sender=", "receiver="])
+                                "p:s:r:", ["port=", "sender=", "receiver="])
     except:
         usage()
         exit()
