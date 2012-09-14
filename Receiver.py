@@ -84,7 +84,8 @@ class Receiver():
             except (KeyboardInterrupt, SystemExit):
                 exit()
             except ValueError, e:
-                print e
+                if self.debug:
+                    print e
                 pass # ignore
 
     # waits until packet is received to return
