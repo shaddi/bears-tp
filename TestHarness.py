@@ -175,7 +175,7 @@ class Forwarder(object):
           raise RuntimeError("No data received by receiver!")
         self.current_test.result(self.recv_outfile)
 
-class Packet():
+class Packet(object):
     def __init__(self, packet, address, start_seqno_base):
         self.full_packet = packet
         self.address = address # where the packet is destined to
