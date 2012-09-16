@@ -129,14 +129,16 @@ class Forwarder(object):
                     self.sender_addr = address
                     self.test_state = "READY"
 
-        if address == self.receiver_addr:
-            p = Packet(message, self.sender_addr, self.start_seqno_base)
-        elif address == self.sender_addr:
-            p = Packet(message, self.receiver_addr, self.start_seqno_base)
-        else:
-            raise ValueError("Packet from unknown source: %s" % str(address))
-        self.in_queue.append(p)
-        self.current_test.handle_packet()
+        if self.test_state == "READY":
+            if address == self.receiver_addr:
+                p = Packet(message, self.sender_addr, self.start_seqno_base)
+            elif address == self.sender_addr:
+                p = Packet(message, self.receiver_addr, self.start_seqno_base)
+            else:
+                # Ignore packets from unknown sources
+                return
+            self.in_queue.append(p)
+            self.current_test.handle_packet()
 
     def start(self):
         self.test_state = "NEW"
