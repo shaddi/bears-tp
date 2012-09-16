@@ -96,7 +96,7 @@ class Forwarder(object):
 
     def _send(self, packet):
         """ Send a packet. """
-        packet.update_packet(seqno=packet.seqno + self.start_seqno_base)
+        packet.update_packet(seqno=packet.seqno + self.start_seqno_base, update_checksum=False)
         self.sock.sendto(packet.full_packet, packet.address)
 
     def register_test(self, testcase, input_file):
@@ -179,7 +179,6 @@ class Packet(object):
     def __init__(self, packet, address, start_seqno_base):
         self.full_packet = packet
         self.address = address # where the packet is destined to
-        self.skip_checksum_update = False # if True, we won't update the checksum for this packet ever.
 
         # this is for making sure we have 0-indexed seq numbers throughout the
         # test.
@@ -202,6 +201,14 @@ class Packet(object):
             self.bogon = True
 
     def update_packet(self, msg_type=None, seqno=None, data=None, full_packet=None, update_checksum=True):
+        """
+        This function handles safely changing the contents of a packet. By
+        default, we re-compute the checksum every time the packet is updated.
+        However, you can disable this if you intend to create a corrupted
+        packet.
+
+        Note that the checksum is calculated over the NON-0-indexed sequence number.
+        """
         if not self.bogon:
             if msg_type == None:
                 msg_type = self.msg_type
@@ -210,12 +217,14 @@ class Packet(object):
             if data == None:
                 data = self.data
 
-            if data and len(data) > 0:
-                body = "%s|%d|%s|" % (msg_type,seqno,data)
-            else:
+            if msg_type == "ack": # doesn't have a data field, so handle separately
                 body = "%s|%d|" % (msg_type, seqno)
-            if update_checksum and not self.skip_checksum_update:
-                checksum = Checksum.generate_checksum(body)
+                checksum_body = "%s|%d|" % (msg_type, seqno + self.start_seqno_base)
+            else:
+                body = "%s|%d|%s|" % (msg_type,seqno,data)
+                checksum_body = "%s|%d|%s|" % (msg_type, seqno + self.start_seqno_base, data)
+            if update_checksum:
+                checksum = Checksum.generate_checksum(checksum_body)
             else:
                 checksum = self.checksum
             self.msg_type = msg_type
