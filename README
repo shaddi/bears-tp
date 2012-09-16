@@ -111,7 +111,7 @@ Passing the basic test cases we provide is a necessary but not sufficient
 condition for doing well on this project; there are still many edge cases that
 they do not cover. In addition, there are other correctness conditions beyond
 simply producing an identical copy of the input file (for instance, you should
-not unnecessarily re-transmit date, nor should you re-transmit data that has
+not unnecessarily re-transmit data, nor should you re-transmit data that has
 already been acknowledged). You should think about what these edge cases might
 be and write appropriate test cases to cover them.
 
