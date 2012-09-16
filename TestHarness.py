@@ -179,6 +179,7 @@ class Packet(object):
     def __init__(self, packet, address, start_seqno_base):
         self.full_packet = packet
         self.address = address # where the packet is destined to
+        self.skip_checksum_update = False # if True, we won't update the checksum for this packet ever.
 
         # this is for making sure we have 0-indexed seq numbers throughout the
         # test.
@@ -213,7 +214,7 @@ class Packet(object):
                 body = "%s|%d|%s|" % (msg_type,seqno,data)
             else:
                 body = "%s|%d|" % (msg_type, seqno)
-            if update_checksum:
+            if update_checksum and not self.skip_checksum_update:
                 checksum = Checksum.generate_checksum(body)
             else:
                 checksum = self.checksum
