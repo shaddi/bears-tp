@@ -146,6 +146,9 @@ class Forwarder(object):
         self.receiver_addr = ('127.0.0.1', self.receiver_port)
         self.recv_outfile = "127.0.0.1.%d" % self.port
 
+        self.in_queue = []
+        self.out_queue = []
+
         receiver = subprocess.Popen(["python", self.receiver_path,
                                      "-p", str(self.receiver_port)])
         time.sleep(0.2) # make sure the receiver is started first
@@ -172,6 +175,17 @@ class Forwarder(object):
             if sender.poll() is None:
                 sender.kill()
             receiver.kill()
+
+            # clear out everything else in the socket buffer before we end
+            timeout = self.sock.gettimeout()
+            try:
+                self.sock.settimeout(0)
+                while True:
+                    m, a = self.sock.recvfrom(4096)
+            except socket.error:
+                pass
+            finally:
+                self.sock.settimeout(timeout)
 
         if not os.path.exists(self.recv_outfile):
           raise RuntimeError("No data received by receiver!")
