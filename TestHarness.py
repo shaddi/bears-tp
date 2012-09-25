@@ -55,7 +55,7 @@ class Forwarder(object):
     """
     The packet forwarder for testing
     """
-    def __init__(self, sender_path, receiver_path, port, debug):
+    def __init__(self, sender_path, receiver_path, port):
         if not os.path.exists(sender_path):
             raise ValueError("Could not find sender path: %s" % sender_path)
         self.sender_path = sender_path
@@ -83,7 +83,6 @@ class Forwarder(object):
         self.receiver_port = self.port + 1
         self.sender_addr = None
         self.receiver_addr = None
-        self.debug = True
 
     def _tick(self):
         """
@@ -147,19 +146,15 @@ class Forwarder(object):
         self.receiver_addr = ('127.0.0.1', self.receiver_port)
         self.recv_outfile = "127.0.0.1.%d" % self.port
 
-        receiver_args = ["python", self.receiver_path,
-                         "-p", str(self.receiver_port)]
-        if self.debug:
-            receiver_args.append("-d")
-        receiver = subprocess.Popen(receiver_args)
-        time.sleep(0.2) # make sure the receiver is started first
+        self.in_queue = []
+        self.out_queue = []
 
-        sender_args = ["python", self.sender_path,
-                       "-f", self.tests[self.current_test],
-                       "-p", str(self.port)]
-        if self.debug:
-            sender_args.append("-d")
-        sender = subprocess.Popen(sender_args)
+        receiver = subprocess.Popen(["python", self.receiver_path,
+                                     "-p", str(self.receiver_port)])
+        time.sleep(0.2) # make sure the receiver is started first
+        sender = subprocess.Popen(["python", self.sender_path,
+                                   "-f", self.tests[self.current_test],
+                                   "-p", str(self.port)])
         try:
             start_time = time.time()
             while sender.poll() is None:
@@ -271,11 +266,10 @@ if __name__ == "__main__":
         print "-s SENDER | --sender SENDER The path to Sender implementation (default: Sender.py)"
         print "-r RECEIVER | --receiver RECEIVER The path to the Receiver implementation (default: Receiver.py)"
         print "-h | --help Print this usage message"
-        print "-d | set debug to true"
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                "p:s:r:d:", ["port=", "sender=", "receiver=", "debug="])
+                                "p:s:r:", ["port=", "sender=", "receiver="])
     except:
         usage()
         exit()
@@ -283,7 +277,6 @@ if __name__ == "__main__":
     port = 33123
     sender = "Sender.py"
     receiver = "Receiver.py"
-    debug = False
 
     for o,a in opts:
         if o in ("-p", "--port"):
@@ -292,9 +285,7 @@ if __name__ == "__main__":
             sender = a
         elif o in ("-r", "--receiver"):
             receiver = a
-        elif o in ("-d", "--debug"):
-            debug = True
 
-    f = Forwarder(sender, receiver, port, debug)
+    f = Forwarder(sender, receiver, port)
     tests_to_run(f)
     f.execute_tests()
