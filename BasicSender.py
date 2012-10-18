@@ -26,7 +26,7 @@ class BasicSender(object):
         self.sock.settimeout(timeout)
         try:
             return self.sock.recv(4096)
-        except socket.timeout:
+        except (socket.timeout, socket.error):
             return None
 
     # Sends a packet to the destination address.
