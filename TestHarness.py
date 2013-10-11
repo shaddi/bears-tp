@@ -65,7 +65,8 @@ class Forwarder(object):
         self.receiver_path = receiver_path
 
         # book keeping for tests
-        self.tests = {} # test object => input file (so we know what file to feed the sender)
+        # [(test object1, input file1), (test object2, input file2), ...]
+        self.tests = []
         self.current_test = None
         self.out_queue = []
         self.in_queue = []
@@ -101,12 +102,12 @@ class Forwarder(object):
 
     def register_test(self, testcase, input_file):
         assert isinstance(testcase, BasicTest.BasicTest)
-        self.tests[testcase] = input_file
+        self.tests.append((testcase, input_file))
 
     def execute_tests(self):
-        for t in self.tests:
+        for (t, input_file) in self.tests:
             self.current_test = t
-            self.start()
+            self.start(input_file)
 
     def handle_receive(self, message, address):
         """
@@ -140,7 +141,7 @@ class Forwarder(object):
             self.in_queue.append(p)
             self.current_test.handle_packet()
 
-    def start(self):
+    def start(self, input_file):
         self.test_state = "NEW"
         self.sender_addr = None
         self.receiver_addr = ('127.0.0.1', self.receiver_port)
@@ -153,7 +154,7 @@ class Forwarder(object):
                                      "-p", str(self.receiver_port)])
         time.sleep(0.2) # make sure the receiver is started first
         sender = subprocess.Popen(["python", self.sender_path,
-                                   "-f", self.tests[self.current_test],
+                                   "-f", input_file,
                                    "-p", str(self.port)])
         try:
             start_time = time.time()
